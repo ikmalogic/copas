@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* Base Theme Variables - Default Dark */
-        :root {
+        /* Base Theme Variables - Applied to body for best compatibility */
+        body {
             --sat: env(safe-area-inset-top);
             --sar: env(safe-area-inset-right);
             --sab: env(safe-area-inset-bottom);
@@ -26,23 +26,7 @@
             --icon-color: #f8fafc;
             --toast-bg: #1e293b;
             --toast-text: #ffffff;
-        }
-
-        /* Light Theme Overrides */
-        body.light-theme {
-            --bg-main: #f1f5f9;
-            --bg-gradient: radial-gradient(circle at top left, #ffffff, #e2e8f0);
-            --text-main: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.8);
-            --glass-border: rgba(0, 0, 0, 0.1);
-            --input-bg: rgba(255, 255, 255, 0.9);
-            --card-text: #475569;
-            --icon-color: #1e293b;
-            --toast-bg: #ffffff;
-            --toast-text: #0f172a;
-        }
-
-        body {
+            
             background: var(--bg-main);
             background-image: var(--bg-gradient);
             background-attachment: fixed;
@@ -55,6 +39,22 @@
             padding-right: calc(1rem + var(--sar));
             transition: background 0.4s ease, color 0.4s ease;
             overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Light Theme Variable Overrides */
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --bg-gradient: radial-gradient(circle at top left, #ffffff, #e2e8f0);
+            --text-main: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.95);
+            --card-text: #475569;
+            --icon-color: #0f172a;
+            --toast-bg: #ffffff;
+            --toast-text: #0f172a;
         }
 
         .glass {
@@ -69,7 +69,7 @@
             background: var(--input-bg);
             border: 1px solid var(--glass-border);
             transition: all 0.3s ease;
-            font-size: 16px !important;
+            font-size: 16px !important; /* Prevents auto-zoom on mobile */
             color: var(--text-main);
         }
 
@@ -98,11 +98,11 @@
             min-height: 44px;
         }
 
-        /* Assistive Touch Style */
+        /* Assistive Touch Ball */
         #assistive-touch {
             position: fixed;
-            width: 56px;
-            height: 56px;
+            width: 58px;
+            height: 58px;
             background: var(--glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -112,18 +112,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: grab;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
             touch-action: none;
             user-select: none;
             right: 20px;
             bottom: 40px;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease;
         }
 
         #assistive-touch:active {
-            cursor: grabbing;
-            transform: scale(0.9);
+            transform: scale(0.85);
         }
 
         .icon-container {
@@ -131,7 +130,7 @@
             height: 28px;
             color: var(--icon-color);
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease;
-            pointer-events: none;
+            pointer-events: none; /* Prevents icon from blocking events */
         }
 
         #toast {
@@ -142,13 +141,14 @@
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.4); border-radius: 10px; }
     </style>
 </head>
-<body class="flex justify-center">
+<body>
     <!-- Assistive Touch Ball -->
     <div id="assistive-touch">
         <div id="icon-box" class="icon-container">
+            <!-- Default Moon Icon (Dark Mode) -->
             <svg id="theme-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
@@ -184,7 +184,7 @@
         </div>
 
         <!-- List Container -->
-        <div id="itemList" class="space-y-4">
+        <div id="itemList" class="space-y-4 pb-20">
             <!-- Data akan dimunculkan di sini -->
         </div>
 
@@ -195,7 +195,7 @@
         </div>
 
         <!-- Delete Modal -->
-        <div id="deleteModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden items-center justify-center z-[110] p-6">
+        <div id="deleteModal" class="fixed inset-0 bg-black/70 backdrop-blur-md hidden items-center justify-center z-[110] p-6">
             <div class="glass p-8 max-w-xs w-full rounded-[3rem] text-center border border-white/10 shadow-3xl">
                 <div class="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2m-6 9v4m4-4v4"/></svg>
@@ -227,8 +227,8 @@
         const onStart = (e) => {
             isDragging = true;
             startTime = Date.now();
-            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
             
             startX = clientX;
             startY = clientY;
@@ -239,8 +239,8 @@
 
         const onMove = (e) => {
             if (!isDragging) return;
-            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
             
             const dx = clientX - startX;
             const dy = clientY - startY;
@@ -263,22 +263,24 @@
             isDragging = false;
             ball.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
             
-            const clientX = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
-            const clientY = e.type === 'touchend' ? e.changedTouches[0].clientY : e.clientY;
+            const clientX = e.type.includes('touch') ? e.changedTouches[0].clientX : e.clientX;
+            const clientY = e.type.includes('touch') ? e.changedTouches[0].clientY : e.clientY;
             
             const distance = Math.sqrt(Math.pow(clientX - startX, 2) + Math.pow(clientY - startY, 2));
             const duration = Date.now() - startTime;
 
-            // Jika tidak bergerak jauh dan durasi singkat, dianggap klik
-            if (distance < 10 && duration < 300) {
+            // Tolerance for click: moved less than 20px and happened within 300ms
+            if (distance < 20 && duration < 300) {
                 toggleTheme();
             }
         };
 
+        // Desktop Events
         ball.addEventListener('mousedown', onStart);
         window.addEventListener('mousemove', onMove);
         window.addEventListener('mouseup', onEnd);
 
+        // Mobile Events
         ball.addEventListener('touchstart', onStart, { passive: false });
         window.addEventListener('touchmove', onMove, { passive: false });
         window.addEventListener('touchend', onEnd);
@@ -286,7 +288,7 @@
         function toggleTheme() {
             const isLight = document.body.classList.toggle('light-theme');
             
-            // Animasi rotasi ikon
+            // Icon Animation
             iconBox.style.transform = 'scale(0) rotate(180deg)';
             
             setTimeout(() => {
@@ -389,9 +391,13 @@
                 el.value = text;
                 document.body.appendChild(el);
                 el.select();
-                document.execCommand('copy');
+                try {
+                    document.execCommand('copy');
+                    showToast("Prompt Disalin!", "bg-emerald-500");
+                } catch (e) {
+                    showToast("Gagal menyalin", "bg-red-500");
+                }
                 document.body.removeChild(el);
-                showToast("Prompt Disalin!", "bg-emerald-500");
             }
         }
 
@@ -473,6 +479,7 @@
             });
         }
 
+        // Initialize
         window.onload = renderItems;
     </script>
 </body>
