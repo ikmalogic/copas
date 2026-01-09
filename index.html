@@ -9,34 +9,43 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* Base Theme Variables - Default Dark */
         :root {
             --sat: env(safe-area-inset-top);
             --sar: env(safe-area-inset-right);
             --sab: env(safe-area-inset-bottom);
             --sal: env(safe-area-inset-left);
             
-            /* Theme Variables - Default Dark */
-            --bg-main: radial-gradient(circle at top left, #1e293b, #0f172a);
+            --bg-main: #0f172a;
+            --bg-gradient: radial-gradient(circle at top left, #1e293b, #0f172a);
             --text-main: #f8fafc;
             --glass-bg: rgba(255, 255, 255, 0.04);
             --glass-border: rgba(255, 255, 255, 0.1);
             --input-bg: rgba(0, 0, 0, 0.3);
             --card-text: #94a3b8;
             --icon-color: #f8fafc;
+            --toast-bg: #1e293b;
+            --toast-text: #ffffff;
         }
 
-        .light-theme {
-            --bg-main: radial-gradient(circle at top left, #f8fafc, #e2e8f0);
-            --text-main: #1e293b;
-            --glass-bg: rgba(255, 255, 255, 0.7);
-            --glass-border: rgba(0, 0, 0, 0.05);
-            --input-bg: rgba(255, 255, 255, 0.8);
+        /* Light Theme Overrides */
+        body.light-theme {
+            --bg-main: #f1f5f9;
+            --bg-gradient: radial-gradient(circle at top left, #ffffff, #e2e8f0);
+            --text-main: #0f172a;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --input-bg: rgba(255, 255, 255, 0.9);
             --card-text: #475569;
             --icon-color: #1e293b;
+            --toast-bg: #ffffff;
+            --toast-text: #0f172a;
         }
 
         body {
             background: var(--bg-main);
+            background-image: var(--bg-gradient);
+            background-attachment: fixed;
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
@@ -44,7 +53,8 @@
             padding-bottom: calc(2rem + var(--sab));
             padding-left: calc(1rem + var(--sal));
             padding-right: calc(1rem + var(--sar));
-            transition: background 0.5s ease, color 0.5s ease;
+            transition: background 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
         }
 
         .glass {
@@ -52,7 +62,7 @@
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            transition: background 0.5s ease, border 0.5s ease;
+            transition: background 0.4s ease, border 0.4s ease;
         }
 
         .glass-input {
@@ -65,7 +75,8 @@
 
         .glass-input:focus {
             border-color: #38bdf8;
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
+            outline: none;
         }
 
         .mono {
@@ -92,10 +103,10 @@
             position: fixed;
             width: 56px;
             height: 56px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border: 1.5px solid var(--glass-border);
             border-radius: 50%;
             z-index: 1000;
             display: flex;
@@ -106,8 +117,8 @@
             touch-action: none;
             user-select: none;
             right: 20px;
-            bottom: 100px;
-            transition: background 0.3s, border 0.3s, transform 0.2s;
+            bottom: 40px;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         #assistive-touch:active {
@@ -119,53 +130,53 @@
             width: 28px;
             height: 28px;
             color: var(--icon-color);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease;
+            pointer-events: none;
         }
 
-        .light-theme #assistive-touch {
-            background: rgba(0, 0, 0, 0.05);
-            border-color: rgba(0, 0, 0, 0.1);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        #toast {
+            background-color: var(--toast-bg);
+            color: var(--toast-text);
+            border: 1px solid var(--glass-border);
         }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.3); border-radius: 10px; }
     </style>
 </head>
-<body class="flex justify-center transition-colors duration-500">
+<body class="flex justify-center">
     <!-- Assistive Touch Ball -->
     <div id="assistive-touch">
         <div id="icon-box" class="icon-container">
-            <!-- Ikon awal (Bulan) -->
             <svg id="theme-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
         </div>
     </div>
 
-    <div class="w-full max-w-2xl">
+    <div class="w-full max-w-2xl px-2">
         <!-- Form Input -->
-        <div class="glass p-5 md:p-6 rounded-[2rem] mb-8 shadow-2xl">
+        <div class="glass p-5 md:p-6 rounded-[2.5rem] mb-8 shadow-2xl mt-4">
             <div class="flex flex-col gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input type="text" id="inputTitle" placeholder="Judul (Wajib)" 
-                        class="glass-input w-full px-4 py-3.5 rounded-2xl outline-none">
+                        class="glass-input w-full px-5 py-4 rounded-3xl outline-none">
                     
                     <input type="url" id="inputLink" placeholder="Tautan (Opsional)" 
-                        class="glass-input w-full px-4 py-3.5 rounded-2xl outline-none">
+                        class="glass-input w-full px-5 py-4 rounded-3xl outline-none">
                 </div>
                 
                 <textarea id="inputPrompt" rows="3" placeholder="Masukkan detail prompt di sini... (Opsional)" 
-                    class="glass-input w-full px-4 py-3.5 rounded-2xl outline-none resize-none"></textarea>
+                    class="glass-input w-full px-5 py-4 rounded-3xl outline-none resize-none"></textarea>
                 
                 <div class="flex gap-2">
                     <button id="saveBtn" onclick="saveItem()" 
-                        class="flex-1 touch-target accent-blue text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/20">
+                        class="flex-1 touch-target accent-blue text-white text-sm font-bold uppercase tracking-widest rounded-[1.5rem] transition-all active:scale-95 shadow-lg shadow-blue-500/20">
                         Simpan
                     </button>
                     <button id="cancelBtn" onclick="clearForm()" 
-                        class="hidden px-6 touch-target bg-slate-800 text-slate-300 text-sm font-bold uppercase tracking-widest rounded-2xl active:scale-95 transition-all">
+                        class="hidden px-6 touch-target bg-slate-500/20 text-current text-sm font-bold uppercase tracking-widest rounded-[1.5rem] active:scale-95 transition-all">
                         Batal
                     </button>
                 </div>
@@ -178,22 +189,22 @@
         </div>
 
         <!-- Toast Notification -->
-        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl transform translate-y-32 opacity-0 transition-all duration-500 z-[100] whitespace-nowrap flex items-center gap-3 border border-white/10">
+        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 text-xs font-bold px-6 py-4 rounded-full shadow-2xl transform translate-y-32 opacity-0 transition-all duration-500 z-[100] whitespace-nowrap flex items-center gap-3">
             <div id="toastIcon" class="w-2 h-2 rounded-full bg-blue-500"></div>
             <span id="toastMsg">Sistem Siap</span>
         </div>
 
         <!-- Delete Modal -->
-        <div id="deleteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[110] p-6">
-            <div class="glass p-8 max-w-xs w-full rounded-[2.5rem] text-center border border-white/10 shadow-3xl">
+        <div id="deleteModal" class="fixed inset-0 bg-black/60 backdrop-blur-md hidden items-center justify-center z-[110] p-6">
+            <div class="glass p-8 max-w-xs w-full rounded-[3rem] text-center border border-white/10 shadow-3xl">
                 <div class="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2m-6 9v4m4-4v4"/></svg>
                 </div>
-                <h3 class="text-xl font-bold text-white mb-2">Hapus?</h3>
-                <p class="text-slate-400 text-sm mb-8 leading-relaxed">Data akan dihapus permanen dari memori HP Anda.</p>
+                <h3 class="text-xl font-bold mb-2">Hapus?</h3>
+                <p class="opacity-60 text-sm mb-8 leading-relaxed">Data akan dihapus permanen dari memori HP Anda.</p>
                 <div class="flex flex-col gap-2">
                     <button id="confirmDeleteBtn" class="w-full py-4 bg-red-600 text-white text-sm font-bold uppercase tracking-widest rounded-2xl shadow-lg shadow-red-500/20">Hapus Sekarang</button>
-                    <button onclick="closeModal()" class="w-full py-4 text-slate-400 text-sm font-bold uppercase tracking-widest rounded-2xl">Kembali</button>
+                    <button onclick="closeModal()" class="w-full py-4 opacity-50 text-sm font-bold uppercase tracking-widest rounded-2xl">Kembali</button>
                 </div>
             </div>
         </div>
@@ -211,11 +222,11 @@
         const iconBox = document.getElementById('icon-box');
         let isDragging = false;
         let startX, startY, initialLeft, initialTop;
-        let hasMoved = false;
+        let startTime;
 
         const onStart = (e) => {
             isDragging = true;
-            hasMoved = false;
+            startTime = Date.now();
             const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
             const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
             
@@ -223,6 +234,7 @@
             startY = clientY;
             initialLeft = ball.offsetLeft;
             initialTop = ball.offsetTop;
+            ball.style.transition = 'none';
         };
 
         const onMove = (e) => {
@@ -232,10 +244,6 @@
             
             const dx = clientX - startX;
             const dy = clientY - startY;
-
-            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
-                hasMoved = true;
-            }
 
             let newLeft = initialLeft + dx;
             let newTop = initialTop + dy;
@@ -250,10 +258,19 @@
             ball.style.bottom = 'auto';
         };
 
-        const onEnd = () => {
+        const onEnd = (e) => {
             if (!isDragging) return;
             isDragging = false;
-            if (!hasMoved) {
+            ball.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            
+            const clientX = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchend' ? e.changedTouches[0].clientY : e.clientY;
+            
+            const distance = Math.sqrt(Math.pow(clientX - startX, 2) + Math.pow(clientY - startY, 2));
+            const duration = Date.now() - startTime;
+
+            // Jika tidak bergerak jauh dan durasi singkat, dianggap klik
+            if (distance < 10 && duration < 300) {
                 toggleTheme();
             }
         };
@@ -274,7 +291,6 @@
             
             setTimeout(() => {
                 if (isLight) {
-                    // SVG Matahari
                     iconBox.innerHTML = `
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="5"></circle>
@@ -286,27 +302,15 @@
                             <line x1="21" y1="12" x2="23" y2="12"></line>
                             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
                             <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                        </svg>
-                    `;
+                        </svg>`;
                 } else {
-                    // SVG Bulan
                     iconBox.innerHTML = `
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                        </svg>
-                    `;
+                        </svg>`;
                 }
                 iconBox.style.transform = 'scale(1) rotate(0deg)';
-            }, 250);
-
-            const toast = document.getElementById('toast');
-            if(isLight) {
-                toast.classList.replace('bg-slate-800', 'bg-white');
-                toast.classList.replace('text-white', 'text-slate-900');
-            } else {
-                toast.classList.replace('bg-white', 'bg-slate-800');
-                toast.classList.replace('text-slate-900', 'text-white');
-            }
+            }, 200);
 
             showToast(isLight ? "Mode Terang" : "Mode Gelap", isLight ? "bg-orange-400" : "bg-blue-500");
         }
@@ -318,7 +322,7 @@
             const prompt = document.getElementById('inputPrompt').value.trim();
 
             if (!title) {
-                showToast("Isi Judul!", "bg-red-500");
+                showToast("Judul wajib diisi!", "bg-red-500");
                 return;
             }
 
@@ -326,7 +330,7 @@
                 const index = promptItems.findIndex(i => i.id === editingId);
                 if (index !== -1) {
                     promptItems[index] = { ...promptItems[index], title, link, prompt };
-                    showToast("Diperbarui", "bg-emerald-500");
+                    showToast("Data Diperbarui", "bg-emerald-500");
                 }
             } else {
                 promptItems.push({
@@ -336,7 +340,7 @@
                     prompt: prompt,
                     colorClass: accents[Math.floor(Math.random() * accents.length)]
                 });
-                showToast("Berhasil Simpan", "bg-blue-500");
+                showToast("Data Berhasil Disimpan", "bg-blue-500");
             }
 
             sortAndSave();
@@ -355,7 +359,7 @@
             document.getElementById('inputPrompt').value = '';
             editingId = null;
             document.getElementById('saveBtn').innerText = 'Simpan';
-            document.getElementById('saveBtn').className = 'flex-1 touch-target accent-blue text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/20';
+            document.getElementById('saveBtn').className = 'flex-1 touch-target accent-blue text-white text-sm font-bold uppercase tracking-widest rounded-[1.5rem] transition-all active:scale-95 shadow-lg shadow-blue-500/20';
             document.getElementById('cancelBtn').classList.add('hidden');
         }
 
@@ -367,7 +371,7 @@
                 document.getElementById('inputPrompt').value = item.prompt;
                 editingId = id;
                 document.getElementById('saveBtn').innerText = 'Perbarui';
-                document.getElementById('saveBtn').className = 'flex-1 touch-target accent-emerald text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20';
+                document.getElementById('saveBtn').className = 'flex-1 touch-target accent-emerald text-white text-sm font-bold uppercase tracking-widest rounded-[1.5rem] transition-all active:scale-95 shadow-lg shadow-emerald-500/20';
                 document.getElementById('cancelBtn').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -402,7 +406,7 @@
                 sortAndSave();
                 renderItems();
                 closeModal();
-                showToast("Dihapus", "bg-red-500");
+                showToast("Data Dihapus", "bg-red-500");
             };
         }
 
@@ -428,7 +432,7 @@
 
             if (promptItems.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-20 opacity-20">
+                    <div class="text-center py-20 opacity-30">
                         <p class="text-xs uppercase tracking-[0.3em]">Workspace Kosong</p>
                     </div>`;
                 return;
@@ -436,32 +440,32 @@
 
             promptItems.forEach(item => {
                 const div = document.createElement('div');
-                div.className = `item-card glass p-5 rounded-[2rem] flex flex-col gap-4 ${editingId === item.id ? 'ring-2 ring-emerald-500' : ''}`;
+                div.className = `item-card glass p-5 rounded-[2.5rem] flex flex-col gap-4 ${editingId === item.id ? 'ring-2 ring-emerald-500' : ''}`;
                 const colorClass = item.colorClass || 'accent-blue';
 
                 div.innerHTML = `
                     <div class="flex justify-between items-start gap-3">
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 mb-1">
-                                <div class="w-1.5 h-1.5 rounded-full ${colorClass}"></div>
+                                <div class="w-2 h-2 rounded-full ${colorClass}"></div>
                                 <h3 class="text-[15px] font-bold truncate uppercase tracking-tight">${item.title}</h3>
                             </div>
-                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-[11px] text-blue-500 truncate block underline decoration-blue-500/20">${item.link}</a>` : ''}
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-[11px] text-blue-500 truncate block underline opacity-60">${item.link}</a>` : ''}
                         </div>
-                        <div class="flex gap-1.5 shrink-0">
-                            <button onclick="copyToClipboard(${item.id})" class="touch-target p-2.5 bg-white/5 rounded-xl text-slate-400 active:bg-white/20 transition-all">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="copyToClipboard(${item.id})" class="touch-target p-3 bg-slate-500/10 rounded-2xl active:bg-slate-500/30 transition-all">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                             </button>
-                            <button onclick="editItem(${item.id})" class="touch-target p-2.5 bg-white/5 rounded-xl text-slate-400 active:bg-white/20 transition-all">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            <button onclick="editItem(${item.id})" class="touch-target p-3 bg-slate-500/10 rounded-2xl active:bg-slate-500/30 transition-all">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </button>
-                            <button onclick="openDeleteModal(${item.id})" class="touch-target p-2.5 bg-red-500/10 rounded-xl text-red-500/70 active:bg-red-500/30 transition-all">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                            <button onclick="openDeleteModal(${item.id})" class="touch-target p-3 bg-red-500/10 rounded-2xl text-red-500 active:bg-red-500/30 transition-all">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
                     </div>
                     ${item.prompt ? `
-                    <div class="bg-black/10 p-4 rounded-2xl text-[13px] mono whitespace-pre-wrap max-h-48 overflow-y-auto border border-white/5 leading-relaxed opacity-80">
+                    <div class="bg-black/10 p-5 rounded-3xl text-[13px] mono whitespace-pre-wrap max-h-56 overflow-y-auto border border-white/5 leading-relaxed opacity-70">
                         ${item.prompt}
                     </div>` : ''}
                 `;
