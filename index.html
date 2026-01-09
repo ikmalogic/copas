@@ -2,36 +2,69 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prompt Manager - Glass Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Prompt Manager - Mobile Optimized</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sar: env(safe-area-inset-right);
+            --sab: env(safe-area-inset-bottom);
+            --sal: env(safe-area-inset-left);
+            
+            /* Theme Variables - Default Dark */
+            --bg-main: radial-gradient(circle at top left, #1e293b, #0f172a);
+            --text-main: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --card-text: #94a3b8;
+            --icon-color: #f8fafc;
+        }
+
+        .light-theme {
+            --bg-main: radial-gradient(circle at top left, #f8fafc, #e2e8f0);
+            --text-main: #1e293b;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(0, 0, 0, 0.05);
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --card-text: #475569;
+            --icon-color: #1e293b;
+        }
+
         body {
-            background: radial-gradient(circle at top left, #1e293b, #0f172a);
-            color: #f8fafc;
+            background: var(--bg-main);
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
+            padding-top: calc(1rem + var(--sat));
+            padding-bottom: calc(2rem + var(--sab));
+            padding-left: calc(1rem + var(--sal));
+            padding-right: calc(1rem + var(--sar));
+            transition: background 0.5s ease, color 0.5s ease;
         }
 
         .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            transition: background 0.5s ease, border 0.5s ease;
         }
 
         .glass-input {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--input-bg);
+            border: 1px solid var(--glass-border);
             transition: all 0.3s ease;
+            font-size: 16px !important;
+            color: var(--text-main);
         }
 
         .glass-input:focus {
             border-color: #38bdf8;
-            background: rgba(0, 0, 0, 0.3);
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
         }
 
@@ -39,81 +72,128 @@
             font-family: 'Fira Code', monospace;
         }
 
-        /* Variasi Gradien */
         .accent-blue { background: linear-gradient(135deg, #38bdf8, #2563eb); }
         .accent-purple { background: linear-gradient(135deg, #a855f7, #7c3aed); }
         .accent-pink { background: linear-gradient(135deg, #f472b6, #db2777); }
         .accent-emerald { background: linear-gradient(135deg, #34d399, #059669); }
 
         .item-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
         }
-        .item-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+
+        .touch-target {
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        /* Assistive Touch Style */
+        #assistive-touch {
+            position: fixed;
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            touch-action: none;
+            user-select: none;
+            right: 20px;
+            bottom: 100px;
+            transition: background 0.3s, border 0.3s, transform 0.2s;
+        }
+
+        #assistive-touch:active {
+            cursor: grabbing;
+            transform: scale(0.9);
+        }
+
+        .icon-container {
+            width: 28px;
+            height: 28px;
+            color: var(--icon-color);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s;
+        }
+
+        .light-theme #assistive-touch {
+            background: rgba(0, 0, 0, 0.05);
+            border-color: rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
-<body class="pt-12 pb-20 px-4">
-    <div class="max-w-3xl mx-auto">
-        
-        <!-- Form Input Glassmorphism -->
-        <div class="glass p-6 rounded-2xl mb-10 shadow-2xl">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div class="space-y-1">
-                    <input type="text" id="inputTitle" placeholder="Judul Instruksi (Wajib)" 
-                        class="glass-input w-full px-4 py-3 rounded-xl text-sm outline-none text-white placeholder-slate-500">
-                </div>
-                <div class="space-y-1">
+<body class="flex justify-center transition-colors duration-500">
+    <!-- Assistive Touch Ball -->
+    <div id="assistive-touch">
+        <div id="icon-box" class="icon-container">
+            <!-- Ikon awal (Bulan) -->
+            <svg id="theme-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <div class="w-full max-w-2xl">
+        <!-- Form Input -->
+        <div class="glass p-5 md:p-6 rounded-[2rem] mb-8 shadow-2xl">
+            <div class="flex flex-col gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input type="text" id="inputTitle" placeholder="Judul (Wajib)" 
+                        class="glass-input w-full px-4 py-3.5 rounded-2xl outline-none">
+                    
                     <input type="url" id="inputLink" placeholder="Tautan (Opsional)" 
-                        class="glass-input w-full px-4 py-3 rounded-xl text-sm outline-none text-white placeholder-slate-500">
+                        class="glass-input w-full px-4 py-3.5 rounded-2xl outline-none">
                 </div>
-            </div>
-            <textarea id="inputPrompt" rows="3" placeholder="Masukkan detail prompt di sini... (Opsional)" 
-                class="glass-input w-full px-4 py-3 rounded-xl text-sm outline-none text-white placeholder-slate-500 resize-none mb-4"></textarea>
-            
-            <div class="flex gap-3">
-                <button id="saveBtn" onclick="saveItem()" 
-                    class="flex-1 py-3 accent-blue text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-blue-500/20">
-                    Simpan Data
-                </button>
-                <button id="cancelBtn" onclick="clearForm()" 
-                    class="hidden px-6 py-3 bg-slate-800 text-slate-300 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-slate-700 transition-all">
-                    Batal
-                </button>
+                
+                <textarea id="inputPrompt" rows="3" placeholder="Masukkan detail prompt di sini... (Opsional)" 
+                    class="glass-input w-full px-4 py-3.5 rounded-2xl outline-none resize-none"></textarea>
+                
+                <div class="flex gap-2">
+                    <button id="saveBtn" onclick="saveItem()" 
+                        class="flex-1 touch-target accent-blue text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/20">
+                        Simpan
+                    </button>
+                    <button id="cancelBtn" onclick="clearForm()" 
+                        class="hidden px-6 touch-target bg-slate-800 text-slate-300 text-sm font-bold uppercase tracking-widest rounded-2xl active:scale-95 transition-all">
+                        Batal
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Animated List -->
+        <!-- List Container -->
         <div id="itemList" class="space-y-4">
-            <!-- Items injected here -->
+            <!-- Data akan dimunculkan di sini -->
         </div>
 
-        <!-- Premium Toast -->
-        <div id="toast" class="fixed bottom-8 right-8 bg-white text-slate-900 text-xs font-bold px-6 py-3 rounded-2xl shadow-2xl transform translate-y-20 opacity-0 transition-all duration-500 z-50 flex items-center gap-3">
+        <!-- Toast Notification -->
+        <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs font-bold px-6 py-3.5 rounded-full shadow-2xl transform translate-y-32 opacity-0 transition-all duration-500 z-[100] whitespace-nowrap flex items-center gap-3 border border-white/10">
             <div id="toastIcon" class="w-2 h-2 rounded-full bg-blue-500"></div>
-            <span id="toastMsg">Pesan Sistem</span>
+            <span id="toastMsg">Sistem Siap</span>
         </div>
 
-        <!-- Elegant Delete Modal -->
-        <div id="deleteModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
-            <div class="glass p-8 max-w-sm w-full rounded-3xl shadow-2xl text-center border border-white/10">
+        <!-- Delete Modal -->
+        <div id="deleteModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center z-[110] p-6">
+            <div class="glass p-8 max-w-xs w-full rounded-[2.5rem] text-center border border-white/10 shadow-3xl">
                 <div class="w-16 h-16 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2m-6 9v4m4-4v4"/></svg>
                 </div>
-                <h3 class="text-lg font-bold text-white mb-2">Hapus Item?</h3>
-                <p class="text-slate-400 text-sm mb-6 leading-relaxed">Data ini akan dihapus secara permanen dari penyimpanan lokal Anda.</p>
-                <div class="flex gap-3">
-                    <button onclick="closeModal()" class="flex-1 py-3 bg-slate-800 text-slate-300 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-slate-700">Batal</button>
-                    <button id="confirmDeleteBtn" class="flex-1 py-3 bg-red-600 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-red-500 shadow-lg shadow-red-500/20">Hapus</button>
+                <h3 class="text-xl font-bold text-white mb-2">Hapus?</h3>
+                <p class="text-slate-400 text-sm mb-8 leading-relaxed">Data akan dihapus permanen dari memori HP Anda.</p>
+                <div class="flex flex-col gap-2">
+                    <button id="confirmDeleteBtn" class="w-full py-4 bg-red-600 text-white text-sm font-bold uppercase tracking-widest rounded-2xl shadow-lg shadow-red-500/20">Hapus Sekarang</button>
+                    <button onclick="closeModal()" class="w-full py-4 text-slate-400 text-sm font-bold uppercase tracking-widest rounded-2xl">Kembali</button>
                 </div>
             </div>
         </div>
@@ -126,13 +206,119 @@
 
         const accents = ['accent-blue', 'accent-purple', 'accent-pink', 'accent-emerald'];
 
+        // Assistive Touch Logic
+        const ball = document.getElementById('assistive-touch');
+        const iconBox = document.getElementById('icon-box');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        let hasMoved = false;
+
+        const onStart = (e) => {
+            isDragging = true;
+            hasMoved = false;
+            const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            
+            startX = clientX;
+            startY = clientY;
+            initialLeft = ball.offsetLeft;
+            initialTop = ball.offsetTop;
+        };
+
+        const onMove = (e) => {
+            if (!isDragging) return;
+            const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                hasMoved = true;
+            }
+
+            let newLeft = initialLeft + dx;
+            let newTop = initialTop + dy;
+
+            const padding = 10;
+            newLeft = Math.max(padding, Math.min(newLeft, window.innerWidth - ball.offsetWidth - padding));
+            newTop = Math.max(padding, Math.min(newTop, window.innerHeight - ball.offsetHeight - padding));
+
+            ball.style.left = `${newLeft}px`;
+            ball.style.top = `${newTop}px`;
+            ball.style.right = 'auto';
+            ball.style.bottom = 'auto';
+        };
+
+        const onEnd = () => {
+            if (!isDragging) return;
+            isDragging = false;
+            if (!hasMoved) {
+                toggleTheme();
+            }
+        };
+
+        ball.addEventListener('mousedown', onStart);
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onEnd);
+
+        ball.addEventListener('touchstart', onStart, { passive: false });
+        window.addEventListener('touchmove', onMove, { passive: false });
+        window.addEventListener('touchend', onEnd);
+
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-theme');
+            
+            // Animasi rotasi ikon
+            iconBox.style.transform = 'scale(0) rotate(180deg)';
+            
+            setTimeout(() => {
+                if (isLight) {
+                    // SVG Matahari
+                    iconBox.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    `;
+                } else {
+                    // SVG Bulan
+                    iconBox.innerHTML = `
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    `;
+                }
+                iconBox.style.transform = 'scale(1) rotate(0deg)';
+            }, 250);
+
+            const toast = document.getElementById('toast');
+            if(isLight) {
+                toast.classList.replace('bg-slate-800', 'bg-white');
+                toast.classList.replace('text-white', 'text-slate-900');
+            } else {
+                toast.classList.replace('bg-white', 'bg-slate-800');
+                toast.classList.replace('text-slate-900', 'text-white');
+            }
+
+            showToast(isLight ? "Mode Terang" : "Mode Gelap", isLight ? "bg-orange-400" : "bg-blue-500");
+        }
+
+        // CRUD Logic
         function saveItem() {
             const title = document.getElementById('inputTitle').value.trim();
             const link = document.getElementById('inputLink').value.trim();
             const prompt = document.getElementById('inputPrompt').value.trim();
 
             if (!title) {
-                showToast("Judul wajib diisi", "bg-red-500");
+                showToast("Isi Judul!", "bg-red-500");
                 return;
             }
 
@@ -140,7 +326,7 @@
                 const index = promptItems.findIndex(i => i.id === editingId);
                 if (index !== -1) {
                     promptItems[index] = { ...promptItems[index], title, link, prompt };
-                    showToast("Data diperbarui", "bg-emerald-500");
+                    showToast("Diperbarui", "bg-emerald-500");
                 }
             } else {
                 promptItems.push({
@@ -150,7 +336,7 @@
                     prompt: prompt,
                     colorClass: accents[Math.floor(Math.random() * accents.length)]
                 });
-                showToast("Data disimpan", "bg-blue-500");
+                showToast("Berhasil Simpan", "bg-blue-500");
             }
 
             sortAndSave();
@@ -168,8 +354,8 @@
             document.getElementById('inputLink').value = '';
             document.getElementById('inputPrompt').value = '';
             editingId = null;
-            document.getElementById('saveBtn').innerText = 'Simpan Data';
-            document.getElementById('saveBtn').className = 'flex-1 py-3 accent-blue text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-blue-500/20';
+            document.getElementById('saveBtn').innerText = 'Simpan';
+            document.getElementById('saveBtn').className = 'flex-1 touch-target accent-blue text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-blue-500/20';
             document.getElementById('cancelBtn').classList.add('hidden');
         }
 
@@ -180,27 +366,28 @@
                 document.getElementById('inputLink').value = item.link;
                 document.getElementById('inputPrompt').value = item.prompt;
                 editingId = id;
-                document.getElementById('saveBtn').innerText = 'Perbarui Data';
-                document.getElementById('saveBtn').className = 'flex-1 py-3 accent-emerald text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all hover:brightness-110 active:scale-95 shadow-lg shadow-emerald-500/20';
+                document.getElementById('saveBtn').innerText = 'Perbarui';
+                document.getElementById('saveBtn').className = 'flex-1 touch-target accent-emerald text-white text-sm font-bold uppercase tracking-widest rounded-2xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20';
                 document.getElementById('cancelBtn').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-                showToast("Mode Edit Aktif", "bg-yellow-500");
             }
         }
 
         function copyToClipboard(id) {
             const item = promptItems.find(i => i.id === id);
             if (item) {
-                const promptSection = item.prompt ? `\nPrompt:\n${item.prompt}` : '';
-                const text = `Judul: ${item.title}\nLink: ${item.link || '-'}${promptSection}`;
-                
+                const text = item.prompt || "";
+                if (!text) {
+                    showToast("Prompt Kosong!", "bg-yellow-500");
+                    return;
+                }
                 const el = document.createElement('textarea');
                 el.value = text;
                 document.body.appendChild(el);
                 el.select();
                 document.execCommand('copy');
                 document.body.removeChild(el);
-                showToast("Salin ke Clipboard", "bg-emerald-500");
+                showToast("Prompt Disalin!", "bg-emerald-500");
             }
         }
 
@@ -215,7 +402,7 @@
                 sortAndSave();
                 renderItems();
                 closeModal();
-                showToast("Data Dihapus", "bg-red-500");
+                showToast("Dihapus", "bg-red-500");
             };
         }
 
@@ -229,14 +416,10 @@
             const t = document.getElementById('toast');
             const icon = document.getElementById('toastIcon');
             const label = document.getElementById('toastMsg');
-            
             label.innerText = msg;
             icon.className = `w-2 h-2 rounded-full ${colorClass}`;
-            
-            t.classList.remove('opacity-0', 'translate-y-20');
-            setTimeout(() => {
-                t.classList.add('opacity-0', 'translate-y-20');
-            }, 2500);
+            t.classList.remove('opacity-0', 'translate-y-32');
+            setTimeout(() => t.classList.add('opacity-0', 'translate-y-32'), 2500);
         }
 
         function renderItems() {
@@ -246,50 +429,41 @@
             if (promptItems.length === 0) {
                 container.innerHTML = `
                     <div class="text-center py-20 opacity-20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                        </svg>
-                        <p class="text-xs uppercase tracking-widest">Belum ada data tersimpan</p>
-                    </div>
-                `;
+                        <p class="text-xs uppercase tracking-[0.3em]">Workspace Kosong</p>
+                    </div>`;
                 return;
             }
 
             promptItems.forEach(item => {
                 const div = document.createElement('div');
-                div.className = `item-card glass p-5 rounded-2xl flex flex-col gap-4 ${editingId === item.id ? 'ring-1 ring-emerald-500/50' : ''}`;
+                div.className = `item-card glass p-5 rounded-[2rem] flex flex-col gap-4 ${editingId === item.id ? 'ring-2 ring-emerald-500' : ''}`;
                 const colorClass = item.colorClass || 'accent-blue';
 
                 div.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div class="flex-1 min-w-0 pr-4">
+                    <div class="flex justify-between items-start gap-3">
+                        <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-2 mb-1">
-                                <div class="w-2 h-2 rounded-full ${colorClass}"></div>
-                                <h3 class="text-sm font-bold text-white truncate uppercase tracking-tight">${item.title}</h3>
+                                <div class="w-1.5 h-1.5 rounded-full ${colorClass}"></div>
+                                <h3 class="text-[15px] font-bold truncate uppercase tracking-tight">${item.title}</h3>
                             </div>
-                            ${item.link ? `
-                                <a href="${item.link}" target="_blank" class="text-[10px] text-blue-400 hover:text-blue-300 truncate block underline decoration-blue-500/30">
-                                    ${item.link}
-                                </a>
-                            ` : ''}
+                            ${item.link ? `<a href="${item.link}" target="_blank" class="text-[11px] text-blue-500 truncate block underline decoration-blue-500/20">${item.link}</a>` : ''}
                         </div>
-                        <div class="flex gap-2 shrink-0">
-                            <button onclick="copyToClipboard(${item.id})" title="Salin" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        <div class="flex gap-1.5 shrink-0">
+                            <button onclick="copyToClipboard(${item.id})" class="touch-target p-2.5 bg-white/5 rounded-xl text-slate-400 active:bg-white/20 transition-all">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                             </button>
-                            <button onclick="editItem(${item.id})" title="Edit" class="p-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-all">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                            <button onclick="editItem(${item.id})" class="touch-target p-2.5 bg-white/5 rounded-xl text-slate-400 active:bg-white/20 transition-all">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                             </button>
-                            <button onclick="openDeleteModal(${item.id})" title="Hapus" class="p-2 bg-red-500/10 hover:bg-red-500/20 rounded-lg text-red-500/70 hover:text-red-500 transition-all">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v3"></path></svg>
+                            <button onclick="openDeleteModal(${item.id})" class="touch-target p-2.5 bg-red-500/10 rounded-xl text-red-500/70 active:bg-red-500/30 transition-all">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                             </button>
                         </div>
                     </div>
                     ${item.prompt ? `
-                    <div class="bg-black/20 p-4 rounded-xl text-[12px] text-slate-400 mono whitespace-pre-wrap max-h-40 overflow-y-auto custom-scrollbar border border-white/5 leading-relaxed">
+                    <div class="bg-black/10 p-4 rounded-2xl text-[13px] mono whitespace-pre-wrap max-h-48 overflow-y-auto border border-white/5 leading-relaxed opacity-80">
                         ${item.prompt}
-                    </div>
-                    ` : ''}
+                    </div>` : ''}
                 `;
                 container.appendChild(div);
             });
